@@ -1,0 +1,65 @@
+@model Models.ACME.ArticuloEntidad
+
+@{
+    ViewData["Title"] = "Anular";
+}
+
+<h3>¿Está seguro de anular el registro?</h3>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Articulo - Anular</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Anular" method="post" class="row mb-3">
+            <!-- Campos del formulario -->
+            
+<div class="row mb-3">
+<div class="col-md-4">
+        <label asp-for="IDArticulo" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDArticulo)</label>
+        <input type="number" min="0" class="form-control" asp-for="IDArticulo"  readonly #VALORPREDETERMINADO# />
+        <span asp-validation-for="IDArticulo" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="IDUnidadMedida" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDUnidadMedida)</label>
+            @Html.DropDownList("IDUnidadMedida", ViewBag.ListaUnidadMedidaEntidad0 as SelectList, "Seleccione un tipo", new { @class = "form-select form-select-md mb-3" , @disabled = "disabled" })
+            <span asp-validation-for="IDUnidadMedida" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="Articulo" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Articulo)</label>
+        <input type="text" class="form-control" asp-for="Articulo" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="Articulo" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+
+		<div class="col-md-4">
+        <label asp-for="Precio" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Precio)</label>
+        <input type="number" min="0" class="form-control" asp-for="Precio" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="StockActual" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.StockActual)</label>
+        <input type="number" min="0" class="form-control" asp-for="StockActual" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="StockActual" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label class="col-sm-4 col-form-label" asp-for="Activo">@Html.DisplayNameFor(model => Model.Activo)</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Activo" disabled  >
+        </div>
+    </div>
+</div>
+
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Anular</button>
+                <a class="btn btn-secondary" asp-action="IndexPaginado">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

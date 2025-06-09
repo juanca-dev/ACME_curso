@@ -1,0 +1,87 @@
+@model Models.ACME.UnidadMedidaEntidad
+
+@{
+    ViewData["Title"] = "BuscarxID";
+}
+
+<style>
+    .btn img {
+        width: 24px;
+        height: auto; /* Esto mantiene la proporción de la imagen */
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="col col-md-4">Requisición - Ver detalle</h5>
+            <nav class="navbar">
+                <div class="container justify-content-end">
+                    <div class="btn-group" role="group" aria-label="Barra de herramientas">
+                        <!-- Botón: Ir al primer registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDUnidadMedida="@ViewBag.Inicio" title="Ir al primer registro">
+                            <i class="bi bi-skip-backward-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al registro anterior -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDUnidadMedida="@ViewBag.Anterior" title="Ir al registro anterior">
+                            <i class="bi bi-caret-left-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al siguiente registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDUnidadMedida="@ViewBag.Siguiente" title="Ir al siguiente registro">
+                            <i class="bi bi-caret-right-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al último registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDUnidadMedida="@ViewBag.Fin" title="Ir al último registro">
+                            <i class="bi bi-skip-forward-fill"></i>
+                        </a>
+
+                        <!-- Botón: Editar -->
+                        <a class="btn btn-dark" asp-action="Modificar" asp-route-IDUnidadMedida="@Model.IDUnidadMedida" title="Modificar registro">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <!-- Botón: Anular -->
+                        <a class="btn btn-danger" asp-action="Anular" asp-route-IDUnidadMedida="@Model.IDUnidadMedida" title="Anular registro">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="card-body">
+        <div>
+            <!-- Campos del formulario -->
+            
+<div class="row mb-3">
+<div class="col-md-4">
+        <label asp-for="IDUnidadMedida" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDUnidadMedida)</label>
+        <input type="number" min="0" class="form-control" asp-for="IDUnidadMedida" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="IDUnidadMedida" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="UnidadMedida" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.UnidadMedida)</label>
+        <input type="text" class="form-control" asp-for="UnidadMedida" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="UnidadMedida" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="Sigla" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Sigla)</label>
+        <input type="text" class="form-control" asp-for="Sigla" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="Sigla" class="text-danger"></span>
+    </div>
+</div>
+
+
+            <div class="row">
+                <div class="col-4">
+                    <a asp-action="IndexPaginado" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

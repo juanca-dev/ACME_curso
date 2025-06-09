@@ -1,0 +1,496 @@
+@model Models.ACME.RequisicionEntidad
+
+@{
+    ViewData["Title"] = "Crear Requisicion";
+}
+
+<style>
+    .btn img {
+    width: 24px;
+    height: auto; /* Esto mantiene la proporción de la imagen */
+    }
+</style>
+<form asp-action="Crear" method="post" class="row mb-3" id="CrearRequisicion">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="col col-md-4">Requisicion - Crear</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                <!-- Campos del formulario -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="IDRequisicion" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDRequisicion)</label>
+                        <input type="number" min="0" class="form-control" asp-for="IDRequisicion" readonly />
+                        <span asp-validation-for="IDRequisicion" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="IDEmpresa" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDEmpresa)</label>
+                        @Html.DropDownList("IDEmpresa", ViewBag.ListaEmpresaEntidad0 as SelectList, "Seleccione un tipo", new { @class = "form-select form-select-md mb-3", @id = "IDEmpresaCab" })
+                        <span asp-validation-for="IDEmpresa" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="NroRequisicion" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.NroRequisicion)</label>
+                        <input type="text" class="form-control" asp-for="NroRequisicion" />
+                        <span asp-validation-for="NroRequisicion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <label asp-for="FechaEmision" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.FechaEmision)</label>
+                        <input type="date" class="form-control" asp-for="FechaEmision" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="FechaEmision" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-sm-4 col-form-label" asp-for="Aprobada">@Html.DisplayNameFor(model => Model.Aprobada)</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="Aprobada">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-sm-4 col-form-label" asp-for="Activo">@Html.DisplayNameFor(model => Model.Activo)</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="Activo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Pestañas -->
+        <ul class="nav nav-tabs mt-4" id="tabDetails" role="tablist">
+
+            <li class="nav-item">
+                <a class="nav-link active" id="RequisicionDetalle-tab" data-bs-toggle="tab" href="#RequisicionDetalle" role="tab">Artículos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " id="RequisicionAnotacion-tab" data-bs-toggle="tab" href="#RequisicionAnotacion" role="tab">Anotaciones</a>
+            </li>
+        </ul>
+
+        <!-- Contenido de las pestañas -->
+        <div class="tab-content mt-3" id="tabDetailsContent">
+
+            <!-- Tab: RequisicionDetalle -->
+            <div class="tab-pane fade show active" id="RequisicionDetalle" role="tabpanel">
+                <div class="d-flex justify-content-between mb-2">
+                    <h4>RequisicionDetalle</h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRequisicionDetalleModal">Agregar RequisicionDetalle</button>
+                </div>
+                <table class="table table-bordered table-striped" id="RequisicionDetalleTable">
+                    <thead>
+                        <tr>
+
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionDetalle[0].Linea)</th>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionDetalle[0].IDArticulo)</th>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionDetalle[0].Articulo)</th>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionDetalle[0].Cantidad)</th>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionDetalle[0].Activo)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var RequisicionDetalleEntidad in Model.ListaRequisicionDetalle)
+                        {
+                            <tr>
+                                <th scope="row" style="text-align: center;">@RequisicionDetalleEntidad.Linea</th>
+                                <td>@RequisicionDetalleEntidad.IDArticulo</td>
+                                <td>@RequisicionDetalleEntidad.Articulo</td>
+                                <td>@RequisicionDetalleEntidad.Cantidad</td>
+                                @{
+                                    string activoActivo = string.Empty;
+                                    if (RequisicionDetalleEntidad?.Activo == true)
+                                    {
+                                        activoActivo = "checked";
+                                    }
+                                    else
+                                    {
+                                        activoActivo = string.Empty;
+                                    }
+                                }
+                                <td class="text-center align-middle">
+                                    <input class="form-check-input" type="checkbox" disabled @activoActivo>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm btnEliminar">Eliminar</button>
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- Tab: RequisicionAnotacion -->
+            <div class="tab-pane fade " id="RequisicionAnotacion" role="tabpanel">
+                <div class="d-flex justify-content-between mb-2">
+                    <h4>RequisicionAnotacion</h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRequisicionAnotacionModal">Agregar RequisicionAnotacion</button>
+                </div>
+                <table class="table table-bordered table-striped" id="RequisicionAnotacionTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionAnotacion[0].Anotacion)</th>
+                            <th scope="col" style="text-align: center;">@Html.DisplayNameFor(model => Model.ListaRequisicionAnotacion[0].Activo)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var RequisicionAnotacionEntidad in Model.ListaRequisicionAnotacion)
+                        {
+                            <tr>
+                                <td>@RequisicionAnotacionEntidad.Anotacion</td>
+                                @{
+                                    string activoActivo = string.Empty;
+                                    if (RequisicionAnotacionEntidad?.Activo == true)
+                                    {
+                                        activoActivo = "checked";
+                                    }
+                                    else
+                                    {
+                                        activoActivo = string.Empty;
+                                    }
+                                }
+                                <td class="text-center align-middle">
+                                    <input class="form-check-input" type="checkbox" disabled @activoActivo>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Crear</button>
+                <a class="btn btn-secondary" asp-action="IndexPaginado">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal para agregar RequisicionDetalle -->
+<div class="modal fade" id="addRequisicionDetalleModal" tabindex="-1" aria-labelledby="addRequisicionDetalleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRequisicionDetalleModalLabel">Agregar RequisicionDetalle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Campos ocultos / Inicialización de valores PK y FK -->
+                <input type="hidden" class="form-control" id="IDRequisicionDetREQS" name="IDRequisicionDetREQS" value="1" />
+                <input type="hidden" class="form-control" id="IDArticuloDetREQS" name="IDArticuloDetREQS" />
+                <input type="hidden" class="form-control" id="IDRequisicionDetalleDetREQS" name="IDRequisicionDetalleDetREQS" value="0" />
+
+                <div class="row mb-3">
+                    <!-- Filtro de búsqueda -->
+                    <div class="col-md-6">
+                        <label for="filtroIDArticuloREQS" class="form-label">Buscar ArticuloREQS</label>
+                        <input type="text" id="filtroIDArticuloREQS" class="form-control" placeholder="Escribe el nombre del Artículo">
+                    </div>
+                    <!-- Select dinámico -->
+                    <div class="col-md-6">
+                        <label for="selectArticuloREQS" class="form-label">Artículos</label>
+                        <select id="selectArticuloREQS" class="form-select">
+                            <option value="" disabled selected>Selecciona un Artículo...</option>
+                        </select>
+                        <span class="text-danger" id="errorselectArticuloREQS"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="Linea" class="col-sm-4 col-form-label">Linea</label>
+                        <input type="number" min="0" id="LineaDetREQS" name="LineaDetREQS" class="form-control" for="Linea" />
+                        <span validation-for="Linea" class="text-danger" id="errorLineaDetREQS"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="Cantidad" class="col-sm-4 col-form-label">Cantidad</label>
+                        <input type="number" min="0" id="CantidadDetREQS" name="CantidadDetREQS" class="form-control" for="Cantidad" />
+                        <span validation-for="Cantidad" class="text-danger" id="errorCantidadDetREQS"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-sm-4 col-form-label" for="Activo">Activo</label>
+                        <div class="form-check">
+                            <input class="form-check-input" id="ActivoDetREQS" name="ActivoDetREQS" type="checkbox" for="Activo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="agregarRequisicionDetalle">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para agregar RequisicionAnotacion -->
+<div class="modal fade" id="addRequisicionAnotacionModal" tabindex="-1" aria-labelledby="addRequisicionAnotacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRequisicionAnotacionModalLabel">Agregar RequisicionAnotacion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Campos ocultos / Inicialización de valores PK y FK -->
+                <input type="hidden" class="form-control" id="IDRequisicionDetREQI" name="IDRequisicionDetREQI" value="1" />
+                <input type="hidden" class="form-control" id="IDRequisicionAnotacionDetREQI" name="IDRequisicionAnotacionDetREQI" value="0" />
+
+                <div class="row mb-3">
+                   <div class="col-md-4">
+                        <label for="Anotacion" class="col-sm-4 col-form-label">Anotación</label>
+                        <input type="text" id="AnotacionDetREQI" name="AnotacionDetREQI" class="form-control" for="Anotacion" />
+                        <span validation-for="Anotacion" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-sm-4 col-form-label" for="Activo">Activo</label>
+                        <div class="form-check">
+                            <input class="form-check-input" id="ActivoDetREQI" name="ActivoDetREQI" type="checkbox" for="Activo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="agregarRequisicionAnotacion">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* JavaScript y AJAX *@
+@section Scripts
+{
+    @* Buscar Articulo dinámicamente mientras se escribe *@
+    <script>
+        $(document).ready(function () {
+            $('#filtroIDArticuloREQS').on('input', function () {
+                const filtro = $(this).val();
+
+                if (filtro.trim() === '') {
+                    $('#selectArticuloREQS').empty().append('<option value="" disabled selected>Escribe para buscar un Artículo...</option>');
+                    return;
+                }
+
+                // Llamada AJAX
+                $.get('/Articulo/FiltrarArticulo', { filtro }, function (listaArticuloREQS) {
+                    $('#selectArticuloREQS').empty();
+
+                    if (listaArticuloREQS.length === 0) {
+                        $('#selectArticuloREQS').append('<option value="" disabled selected>No se encontraron resultados</option>');
+                        return;
+                    }
+
+                    $('#selectArticuloREQS').append('<option value="" disabled selected>Selecciona un Artículo</option>');
+                    listaArticuloREQS.forEach(ArticuloREQS => {
+                        $('#selectArticuloREQS').append(`<option value="${ArticuloREQS._IDArticulo}">${ArticuloREQS._Articulo}</option>`);
+                    });
+                });
+            });
+
+            // Limpiar el selectList al cerrar la ventana
+            $('#addRequisicionDetalleModal').on('hidden.bs.modal', function () {
+                $('#filtro').val('');
+                $('#selectArticuloREQS').empty().append('<option value="" disabled selected>Escribe para buscar un Artículo...</option>');
+            });
+        });
+
+    </script>
+
+    @* Captura el evento de cambio en el select *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("selectArticuloREQS").addEventListener("change", function () {
+                // Obtén el valor seleccionado del select
+                var ArticuloREQSSeleccionado = this.value;
+
+                // Asigna el valor al control hidden
+                document.getElementById("IDArticuloDetREQS").value = ArticuloREQSSeleccionado;
+            });
+        });
+
+    </script>
+
+    @* Validación ventana modal RequisicionDetalle - Agregar / Eliminar ítem en RequsicionDetalle *@
+    <script>
+        document.getElementById("agregarRequisicionDetalle").addEventListener("click", function () {
+
+            // Limpiar mensajes de error
+            document.getElementById('errorselectArticuloREQS').innerText = '';
+            document.getElementById('errorLineaDetREQS').innerText = '';
+            document.getElementById('errorCantidadDetREQS').innerText = '';
+
+            // Obtener los valores de los input
+            const iDRequisicionDetalle = document.getElementById("IDRequisicionDetalleDetREQS").value
+            const iDRequisicion = document.getElementById("IDRequisicionDetREQS").value
+            const iDArticulo = document.getElementById("IDArticuloDetREQS").value
+            const linea = document.getElementById("LineaDetREQS").value
+            const cantidad = document.getElementById("CantidadDetREQS").value
+            const activo = document.getElementById("ActivoDetREQS").checked
+            const articulo = document.getElementById("selectArticuloREQS").selectedOptions[0].text;
+
+            const rowCount = document.querySelectorAll("#RequisicionDetalleTable tbody tr").length;
+
+            let esValido = true;
+
+            // Validar campos
+            if (!iDArticulo || iDArticulo < 1)
+            {
+                document.getElementById('errorselectArticuloREQS').innerText = 'Debe seleccionar un Articulo.';
+                esValido = false;
+            }
+
+            if (!linea || linea < 1)
+            {
+                document.getElementById('errorLineaDetREQS').innerText = 'El campo Linea debe ser mayor que cero.';
+                esValido = false;
+            }
+
+            if (!cantidad || cantidad < 1)
+            {
+                document.getElementById('errorCantidadDetREQS').innerText = 'El campo Cantidad debe ser mayor que cero.';
+                esValido = false;
+            }
+
+            if (esValido)
+            {
+                const row = `
+                    <tr>
+                        
+                        <td>${linea}</td>
+                        <td>${iDArticulo}</td>
+                        <td>${articulo}</td>
+                        <td>${cantidad}</td>
+                        <td><input class="form-check-input" type="checkbox" disabled ${(activo == true ? "checked" : "")}></td>
+                        <td><button class="btn btn-danger btn-sm btnEliminar">Eliminar</button></td>
+
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].IDRequisicionDetalle" value="${iDRequisicionDetalle}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].IDRequisicion" value="${iDRequisicion}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].IDArticulo" value="${iDArticulo}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].Articulo" value="${articulo}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].Linea" value="${linea}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].Cantidad" value="${cantidad}" />
+                        <input type="hidden" name="ListaRequisicionDetalle[${rowCount}].Activo" value="${activo}" />
+                    </tr >
+                    `;
+                document.getElementById("RequisicionDetalleTable").querySelector("tbody").insertAdjacentHTML("beforeend", row);
+
+                // Cerrar el modal
+                const RequisicionDetalleModal = bootstrap.Modal.getInstance(document.getElementById("addRequisicionDetalleModal"));
+                RequisicionDetalleModal.hide();
+
+                // Limpiar el formulario
+                const myModal = document.getElementById('addRequisicionDetalleModal');
+                myModal.addEventListener('hidden.bs.modal', function () {
+                    // Limpia los controles de manera específica
+                    document.getElementById('IDArticuloDetREQS').value = '';
+                    document.getElementById('filtroIDArticuloREQS').value = '';
+                    document.getElementById('selectArticuloREQS').value = '';
+                    document.getElementById('LineaDetREQS').value = '';
+                    document.getElementById('CantidadDetREQS').value = '';
+                    document.getElementById('ActivoDetREQS').checked = false;
+                });
+
+            }
+
+        });
+
+        // Delegación de eventos para el botón "Eliminar"
+        document.getElementById("RequisicionDetalleTable").querySelector("tbody").addEventListener("click", function (event) {
+        if (event.target.classList.contains("btnEliminar")) {
+            const fila = event.target.closest("tr"); // Encontrar la fila asociada
+            fila.remove(); // Eliminar la fila
+            }
+        });
+    </script>
+
+    @* Agregar / Eliminar ítem en RequsicionAnotacion - FALTA VALIDACIÓN *@
+    <script>
+        document.getElementById("agregarRequisicionAnotacion").addEventListener("click", function () {
+            const iDRequisicionAnotacion = document.getElementById("IDRequisicionAnotacionDetREQI").value
+            const iDRequisicion = document.getElementById("IDRequisicionDetREQI").value
+            const anotacion = document.getElementById("AnotacionDetREQI").value
+            const activo = document.getElementById("ActivoDetREQI").checked
+
+            const rowCount = document.querySelectorAll("#RequisicionAnotacionTable tbody tr").length;
+
+            console.log(rowCount);
+
+            const row = `
+                <tr>
+
+                    <td>${anotacion}</td>
+                    <td><input class="form-check-input" type="checkbox" disabled ${(activo == true ? "checked" : "")}></td>
+                    <td><button class="btn btn-danger btn-sm btnEliminar">Eliminar</button></td>
+
+                    <input type="hidden" name="ListaRequisicionAnotacion[${rowCount}].IDRequisicionAnotacion" value="${iDRequisicionAnotacion}" />
+                    <input type="hidden" name="ListaRequisicionAnotacion[${rowCount}].IDRequisicion" value="${iDRequisicion}" />
+                    <input type="hidden" name="ListaRequisicionAnotacion[${rowCount}].Anotacion" value="${anotacion}" />
+                    <input type="hidden" name="ListaRequisicionAnotacion[${rowCount}].Activo" value="${activo}" />
+
+                </tr >
+                `;
+            document.getElementById("RequisicionAnotacionTable").querySelector("tbody").insertAdjacentHTML("beforeend", row);
+
+            console.log(row);
+
+            // Cerrar el modal
+            const RequisicionAnotacionModal = bootstrap.Modal.getInstance(document.getElementById("addRequisicionAnotacionModal"));
+            RequisicionAnotacionModal.hide();
+        });
+            // Delegación de eventos para el botón "Eliminar"
+            document.getElementById("RequisicionAnotacionTable").querySelector("tbody").addEventListener("click", function (event) {
+            if (event.target.classList.contains("btnEliminar")) {
+                const fila = event.target.closest("tr"); // Encontrar la fila asociada
+                fila.remove(); // Eliminar la fila
+                }
+            });
+    </script>
+
+    @* Validación en vista Crear *@
+    <script>
+        document.getElementById("CrearRequisicion").addEventListener("submit", function (event) {
+            // Obtener el cuerpo de la tabla de artículos
+            const tablaArticulos = document.getElementById("RequisicionDetalleTable");
+
+            // Contar únicamente las filas <tr> dentro del tbody
+            const filas = document.querySelectorAll("#RequisicionDetalleTable tbody tr").length;
+
+            // Ayuda para depuración
+            console.log(filas);
+
+            // Validar datos de la cabecera
+            const iDEmpresaCab = document.getElementById("IDEmpresaCab").value;
+
+            if (!iDEmpresaCab || iDEmpresaCab < 1) {
+                alert("Debe seleccionar una Empresa");
+
+                event.preventDefault();
+                return false;
+            }
+
+
+            // Validar si hay al menos una fila
+            if (filas === 0) {
+                // Mostrar mensaje de error
+                alert("Debe agregar al menos un artículo antes de guardar la requisición.");
+
+                // Prevenir el envío del formulario
+                event.preventDefault();
+                return false;
+            }
+
+            // Si hay artículos, permitir el envío
+            return true;
+        });
+    </script>
+}

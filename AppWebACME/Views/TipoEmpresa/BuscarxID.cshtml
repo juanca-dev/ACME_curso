@@ -1,0 +1,102 @@
+@model Models.ACME.TipoEmpresaEntidad
+
+@{
+    ViewData["Title"] = "BuscarxID";
+}
+
+<style>
+    .btn img {
+        width: 24px;
+        height: auto; /* Esto mantiene la proporción de la imagen */
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="col col-md-4">Requisición - Ver detalle</h5>
+            <nav class="navbar">
+                <div class="container justify-content-end">
+                    <div class="btn-group" role="group" aria-label="Barra de herramientas">
+                        <!-- Botón: Ir al primer registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Inicio" title="Ir al primer registro">
+                            <i class="bi bi-skip-backward-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al registro anterior -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Anterior" title="Ir al registro anterior">
+                            <i class="bi bi-caret-left-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al siguiente registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Siguiente" title="Ir al siguiente registro">
+                            <i class="bi bi-caret-right-fill"></i>
+                        </a>
+
+                        <!-- Botón: Ir al último registro -->
+                        <a class="btn btn-primary" asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Fin" title="Ir al último registro">
+                            <i class="bi bi-skip-forward-fill"></i>
+                        </a>
+
+                        <!-- Botón: Editar -->
+                        <a class="btn btn-dark" asp-action="Modificar" asp-route-IDTipoEmpresa="@Model.IDTipoEmpresa" title="Modificar registro">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <!-- Botón: Anular -->
+                        <a class="btn btn-danger" asp-action="Anular" asp-route-IDTipoEmpresa="@Model.IDTipoEmpresa" title="Anular registro">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="card-body">
+        <div>
+            <!-- Campos del formulario -->
+            
+<div class="row mb-3">
+<div class="col-md-4">
+        <label asp-for="IDTipoEmpresa" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDTipoEmpresa)</label>
+        <input type="number" min="0" class="form-control" asp-for="IDTipoEmpresa" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="IDTipoEmpresa" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="TipoEmpresa" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.TipoEmpresa)</label>
+        <input type="text" class="form-control" asp-for="TipoEmpresa" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="TipoEmpresa" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="Descripcion" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Descripcion)</label>
+        <input type="text" class="form-control" asp-for="Descripcion" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+
+		<div class="col-md-4">
+        <label asp-for="Sigla" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Sigla)</label>
+        <input type="text" class="form-control" asp-for="Sigla" disabled  #VALORPREDETERMINADO# />
+        <span asp-validation-for="Sigla" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label class="col-sm-4 col-form-label" asp-for="Activo">@Html.DisplayNameFor(model => Model.Activo)</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Activo" disabled  >
+        </div>
+    </div>
+</div>
+
+
+            <div class="row">
+                <div class="col-4">
+                    <a asp-action="IndexPaginado" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

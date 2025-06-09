@@ -1,0 +1,56 @@
+@model Models.ACME.TipoEmpresaEntidad
+
+@{
+    ViewData["Title"] = "Modificar";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5>TipoEmpresa - Modificar</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Modificar" method="post" class="row mb-3">
+            <!-- Campos del formulario -->
+            
+<div class="row mb-3">
+<div class="col-md-4">
+        <label asp-for="IDTipoEmpresa" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDTipoEmpresa)</label>
+        <input type="number" min="0" class="form-control" asp-for="IDTipoEmpresa"  readonly #VALORPREDETERMINADO# />
+        <span asp-validation-for="IDTipoEmpresa" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="TipoEmpresa" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.TipoEmpresa)</label>
+        <input type="text" class="form-control" asp-for="TipoEmpresa"   #VALORPREDETERMINADO# />
+        <span asp-validation-for="TipoEmpresa" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="Descripcion" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Descripcion)</label>
+        <input type="text" class="form-control" asp-for="Descripcion"   #VALORPREDETERMINADO# />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+
+		<div class="col-md-4">
+        <label asp-for="Sigla" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Sigla)</label>
+        <input type="text" class="form-control" asp-for="Sigla"   #VALORPREDETERMINADO# />
+        <span asp-validation-for="Sigla" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label class="col-sm-4 col-form-label" asp-for="Activo">@Html.DisplayNameFor(model => Model.Activo)</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Activo"   >
+        </div>
+    </div>
+</div>
+
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a class="btn btn-secondary" asp-action="IndexPaginado">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+

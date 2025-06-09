@@ -1,0 +1,190 @@
+﻿@* @model EmpleadoViewModel
+@{
+    ViewData["Title"] = "Empleado";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <h2>@(Model.Empleado.ID == 0 ? "Nuevo Empleado" : "Editar Empleado")</h2>
+
+    <form method="post" asp-action="GuardarEmpleado">
+        <div class="mb-3">
+            <label class="form-label">Apellidos</label>
+            <input type="text" class="form-control" asp-for="Empleado.Apellidos" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nombres</label>
+            <input type="text" class="form-control" asp-for="Empleado.Nombres" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Fecha Ingreso</label>
+            <input type="date" class="form-control" asp-for="Empleado.FechaIngreso" required />
+        </div>
+
+        <hr />
+
+        <!-- Tabla Contratos -->
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>Contratos</h5>
+            <button type="button" class="btn btn-sm btn-primary" onclick="abrirModalContrato()">Agregar Contrato</button>
+        </div>
+
+        <table class="table table-sm mt-2" id="tablaContratos">
+            <thead>
+                <tr>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Sueldo</th>
+                    <th>Tipo Contrato</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+
+        <!-- Campos ocultos para los contratos y seguros serializados -->
+        <input type="hidden" name="ContratosJson" id="ContratosJson" />
+        <input type="hidden" name="SegurosJson" id="SegurosJson" />
+
+        <button type="submit" class="btn btn-success mt-4" onclick="prepararEnvio()">Guardar</button>
+    </form>
+</div>
+
+<!-- Modal Contrato -->
+<div class="modal fade" id="modalContrato" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Contrato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="indiceContratoEditar" />
+        <div class="mb-2">
+            <label>Fecha Inicio</label>
+            <input type="date" class="form-control" id="fechaInicioContrato" />
+        </div>
+        <div class="mb-2">
+            <label>Fecha Fin</label>
+            <input type="date" class="form-control" id="fechaFinContrato" />
+        </div>
+        <div class="mb-2">
+            <label>Sueldo</label>
+            <input type="number" class="form-control" id="sueldoContrato" />
+        </div>
+        <div class="mb-2">
+            <label>Tipo Contrato</label>
+            <select class="form-select" id="tipoContrato">
+                @foreach (var item in Model.TipoContratos)
+                {
+                    <option value="@item.ID">@item.TipoContrato</option>
+                }
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Estado</label>
+            <input type="text" class="form-control" id="estadoContrato" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarContrato()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+    let contratos = @Html.Raw(Json.Serialize(Model.Contratos ?? new List<ContratoViewModel>()));
+    let seguros = @Html.Raw(Json.Serialize(Model.Seguros ?? new List<SeguroViewModel>()));
+
+    const modalContrato = new bootstrap.Modal(document.getElementById('modalContrato'));
+    const modalSeguro = new bootstrap.Modal(document.getElementById('modalSeguro'));
+
+    function renderContratos() {
+        const tbody = document.querySelector('#tablaContratos tbody');
+        tbody.innerHTML = '';
+        contratos.forEach((c, i) => {
+            tbody.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td>${c.FechaInicio}</td>
+                    <td>${c.FechaFin}</td>
+                    <td>${c.Sueldo}</td>
+                    <td>${c.TipoContratoNombre}</td>
+                    <td>${c.Estado}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarContrato(${i})">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarContrato(${i})">Eliminar</button>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    function abrirModalContrato() {
+        limpiarModalContrato();
+        modalContrato.show();
+    }
+
+    function guardarContrato() {
+        const contrato = {
+            FechaInicio: document.getElementById('fechaInicioContrato').value,
+            FechaFin: document.getElementById('fechaFinContrato').value,
+            Sueldo: document.getElementById('sueldoContrato').value,
+            TipoContratoID: document.getElementById('tipoContrato').value,
+            TipoContratoNombre: document.getElementById('tipoContrato').selectedOptions[0].text,
+            Estado: document.getElementById('estadoContrato').value
+        };
+
+        const index = document.getElementById('indiceContratoEditar').value;
+        if (index === '') {
+            contratos.push(contrato);
+        } else {
+            contratos[index] = contrato;
+        }
+
+        renderContratos();
+        modalContrato.hide();
+    }
+
+    function editarContrato(i) {
+        const c = contratos[i];
+        document.getElementById('fechaInicioContrato').value = c.FechaInicio;
+        document.getElementById('fechaFinContrato').value = c.FechaFin;
+        document.getElementById('sueldoContrato').value = c.Sueldo;
+        document.getElementById('tipoContrato').value = c.TipoContratoID;
+        document.getElementById('estadoContrato').value = c.Estado;
+        document.getElementById('indiceContratoEditar').value = i;
+        modalContrato.show();
+    }
+
+    function eliminarContrato(i) {
+        contratos.splice(i, 1);
+        renderContratos();
+    }
+
+    function limpiarModalContrato() {
+        document.getElementById('fechaInicioContrato').value = '';
+        document.getElementById('fechaFinContrato').value = '';
+        document.getElementById('sueldoContrato').value = '';
+        document.getElementById('tipoContrato').value = '';
+        document.getElementById('estadoContrato').value = '';
+        document.getElementById('indiceContratoEditar').value = '';
+    }
+
+
+    function prepararEnvio() {
+        document.getElementById('ContratosJson').value = JSON.stringify(contratos);
+        //document.getElementById('SegurosJson').value = JSON.stringify(seguros);
+    }
+
+    // Render inicial
+    renderContratos();
+    //renderSeguros();
+</script> *@
+

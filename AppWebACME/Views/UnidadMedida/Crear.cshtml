@@ -1,0 +1,41 @@
+@model Models.ACME.UnidadMedidaEntidad
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5>UnidadMedida - Crear</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Crear" method="post" class="row mb-3">
+            <!-- Campos del formulario -->
+            
+<div class="row mb-3">
+<div class="col-md-4">
+        <label asp-for="IDUnidadMedida" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.IDUnidadMedida)</label>
+        <input type="number" min="0" class="form-control" asp-for="IDUnidadMedida"  readonly  />
+        <span asp-validation-for="IDUnidadMedida" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="UnidadMedida" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.UnidadMedida)</label>
+        <input type="text" class="form-control" asp-for="UnidadMedida"    />
+        <span asp-validation-for="UnidadMedida" class="text-danger"></span>
+    </div>
+		<div class="col-md-4">
+        <label asp-for="Sigla" class="col-sm-4 col-form-label">@Html.DisplayNameFor(model => Model.Sigla)</label>
+        <input type="text" class="form-control" asp-for="Sigla"    />
+        <span asp-validation-for="Sigla" class="text-danger"></span>
+    </div>
+</div>
+
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Crear</button>
+                <a class="btn btn-secondary" asp-action="IndexPaginado">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
