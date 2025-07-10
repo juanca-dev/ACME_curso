@@ -18,7 +18,6 @@ namespace Services.ACME
             }
             catch
             {
-                Console.WriteLine("Error al crear empresa: ");
                 return false;
             }
         }

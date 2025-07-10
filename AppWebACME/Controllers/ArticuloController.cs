@@ -39,9 +39,9 @@ namespace ACME.Controllers
             ViewBag.totalPaginas = parametro.CalcularPaginas(articuloService.Contar(), tamPagina);
             ViewBag.maxPaginasVisibles = maxPaginasVisibles;
     
-            List<ArticuloEntidad> listaArticuloEntidad;
+            List<ArticuloEntidad>? listaArticuloEntidad;
 
-            listaArticuloEntidad = articuloService.ObtenerPagina(nroPagina, tamPagina) ?? new List<ArticuloEntidad>();
+            listaArticuloEntidad = articuloService.ObtenerPagina(nroPagina, tamPagina);
 
             return View(listaArticuloEntidad);
         }
