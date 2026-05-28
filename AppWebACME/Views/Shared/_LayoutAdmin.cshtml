@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - XperTek ACME</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- ✅ FIX CRÍTICO: Bootstrap Icons (bi bi-*) — requerido por TODAS las vistas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Tabler Icons (ti ti-*) — usado por el sidebar de este layout -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@@latest/dist/tabler-icons.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+    <style>
+        /* ✅ FIX: Variables CSS definidas — sin esto los colores quedan transparentes */
+        :root {
+            --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f5f5f5;
+            --color-background-tertiary: #f0f0f0;
+            --color-background-info: #e8f0fe;
+            --color-text-primary: #111827;
+            --color-text-secondary: #6b7280;
+            --color-text-tertiary: #9ca3af;
+            --color-text-info: #1d4ed8;
+            --color-border-secondary: #e5e7eb;
+            --color-border-tertiary: #f3f4f6;
+            --border-radius-md: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-background-tertiary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--color-background-primary);
+            border-right: 1.5px solid var(--color-border-tertiary);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .logo {
+            padding: 18px 20px;
+            border-bottom: 0.5px solid var(--color-border-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #1a1a2e;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        /* Navegación */
+        .nav-scrollable {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .nav-section {
+            padding: 12px 0 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: var(--color-text-tertiary);
+            padding: 4px 20px 6px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+            .nav-item:hover {
+                color: var(--color-text-primary);
+                background: var(--color-background-secondary);
+                text-decoration: none;
+            }
+
+            .nav-item.active {
+                color: var(--color-text-primary);
+                background: var(--color-background-secondary);
+                border-left-color: #1a1a2e;
+                font-weight: 500;
+            }
+
+            .nav-item i {
+                font-size: 16px;
+            }
+
+        /* Usuario */
+        .user-section {
+            margin-top: auto;
+            padding: 12px 16px;
+            border-top: 0.5px solid var(--color-border-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--color-background-primary);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-background-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-info);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: var(--color-background-primary);
+            border-bottom: 1.5px solid var(--color-border-tertiary);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border: 1.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            color: var(--color-text-secondary);
+            transition: background 0.2s;
+        }
+
+            .btn-icon:hover {
+                background: var(--color-background-secondary);
+                color: var(--color-text-primary);
+            }
+
+        /* Área de renderizado */
+        .view-body {
+            padding: 24px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white" opacity="0.9" />
+                        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity="0.5" />
+                        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity="0.5" />
+                        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity="0.7" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="logo-text">XperTek</div>
+                    <div class="logo-sub">ACME Sistema</div>
+                </div>
+            </div>
+
+            <div class="nav-scrollable">
+                <div class="nav-section">
+                    <div class="nav-label">Principal</div>
+                    <a class="nav-item" href="@Url.Action("Index", "Home")">
+                        <i class="ti ti-layout-dashboard"></i> Dashboard
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-label">Maestros</div>
+                    <a class="nav-item" href="@Url.Action("IndexPaginado", "Empresa")">
+                        <i class="ti ti-building"></i> Empresa
+                    </a>
+                    <a class="nav-item" href="@Url.Action("IndexPaginado", "TipoEmpresa")">
+                        <i class="ti ti-category"></i> Tipo empresa
+                    </a>
+                    <a class="nav-item" href="@Url.Action("IndexPaginado", "UnidadMedida")">
+                        <i class="ti ti-ruler-measure"></i> Unidad medida
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-label">Compras</div>
+                    <a class="nav-item" href="@Url.Action("IndexPaginado", "Requisicion")">
+                        <i class="ti ti-file-text"></i> Requisiciones
+                    </a>
+                    <a class="nav-item" href="@Url.Action("IndexPaginado", "Articulo")">
+                        <i class="ti ti-package"></i> Artículos
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-label">Administración</div>
+                    <a class="nav-item" href="#"><i class="ti ti-users"></i> Usuarios</a>
+                    <a class="nav-item" href="#"><i class="ti ti-shield"></i> Roles</a>
+                </div>
+            </div>
+
+            @* <div class="user-section">
+                <div class="avatar">JA</div>
+                <div>
+                    <div class="user-name">Juan Admin</div>
+                    <div class="user-role">Administrador</div>
+                </div>
+            </div> *@
+
+
+
+
+            <!-- REEMPLAZA el div class="user-section" completo por este: -->
+            <div class="user-section">
+                <div class="avatar">
+                    @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value?
+                                        .Split(' ')
+                                        .Take(2)
+                                        .Select(p => p.Substring(0, 1).ToUpper())
+                                        .Aggregate("", (a, b) => a + b)
+                                        ?? "U")
+                </div>
+                <div style="flex:1; overflow:hidden;">
+                    <div class="user-name">
+                        @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value
+                                                ?? User.Identity?.Name
+                                                ?? "Usuario")
+                    </div>
+                    <div class="user-role">
+                        @(User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                                                ?? "Sin rol")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <div class="page-title">@ViewData["Title"]</div>
+                    <div style="font-size:12px; color:var(--color-text-secondary);">
+                        @DateTime.Now.ToString("MMMM yyyy")
+                    </div>
+                </div>
+                @* <div class="topbar-right">
+                    <button class="btn-icon" aria-label="Configuración"><i class="ti ti-settings"></i></button>
+                    <button class="btn-icon" aria-label="Salir"><i class="ti ti-logout"></i></button>
+                </div> *@
+
+                <!-- REEMPLAZA el div class="topbar-right" completo por este: -->
+                <div class="topbar-right">
+                    <button class="btn-icon" aria-label="Configuración">
+                        <i class="ti ti-settings"></i>
+                    </button>
+
+                    <a href="/Account/Logout"
+                       class="btn-icon"
+                       aria-label="Cerrar sesión"
+                       title="Cerrar sesión"
+                       style="text-decoration:none;"
+                       onmouseover="this.style.background='#fee2e2'; this.style.color='#dc2626'; this.style.borderColor='#fca5a5';"
+                       onmouseout="this.style.background=''; this.style.color=''; this.style.borderColor='';">
+                        <i class="ti ti-logout"></i>
+                    </a>
+                </div>
+            </div>
+
+            <main role="main" class="view-body">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // Marcar ítem activo del sidebar según la URL actual
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentUrl = window.location.pathname.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const href = item.getAttribute('href')?.toLowerCase();
+                if (href && href !== '/' && currentUrl.includes(href)) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
