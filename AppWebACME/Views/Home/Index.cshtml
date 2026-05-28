@@ -1,8 +1,218 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Aprende <a href="https://learn.microsoft.com/aspnet/core">implementación Web con ASP.NET Core</a>.</p>
+@model AppWebACME.Models.DashboardViewModel
+
+@{
+    // Colores para el gráfico de dona (se ciclan si hay más tipos)
+    var coloresPastel = new[] { "#6366f1", "#f59e0b", "#10b981", "#3b82f6", "#ec4899", "#8b5cf6", "#14b8a6" };
+
+    // Calcular total para porcentajes del gráfico de forma segura
+    int totalEmpresasTipo = Model?.EmpresasPorTipo != null ? Model.EmpresasPorTipo.Values.Sum() : 0;
+}
+
+@section Styles {
+   
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+}
+
+<div class="dash-wrapper">
+
+    <div class="dash-header">
+        <div>
+            <h1>📊 Panel de Control <span class="subtitle">Resumen general del sistema ACME</span></h1>
+        </div>
+        <div class="dash-date">
+            A Sullana, 🗓️ @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card" style="--card-accent:#6366f1">
+            <div class="kpi-icon">📋</div>
+            <div class="kpi-info">
+                <span class="kpi-value">@Model.TotalRequisiciones</span>
+                <span class="kpi-label">Total Requisiciones</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" style="--card-accent:#10b981">
+            <div class="kpi-icon">✅</div>
+            <div class="kpi-info">
+                <span class="kpi-value">@Model.TotalAprobadas</span>
+                <span class="kpi-label">Aprobadas</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" style="--card-accent:#3b82f6">
+            <div class="kpi-icon">🏢</div>
+            <div class="kpi-info">
+                <span class="kpi-value">@Model.TotalEmpresasActivas</span>
+                <span class="kpi-label">Empresas Activas</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" style="--card-accent:#f59e0b">
+            <div class="kpi-icon">📦</div>
+            <div class="kpi-info">
+                <span class="kpi-value">@Model.TotalArticulos</span>
+                <span class="kpi-label">Total Artículos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-row">
+
+        <div class="panel">
+            <div class="panel-title"><span class="icon">🥧</span> Empresas por Tipo</div>
+
+            @if (Model.EmpresasPorTipo == null || !Model.EmpresasPorTipo.Any())
+            {
+                <div class="empty-chart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 19a8 8 0 100-16 8 8 0 000 16zm10 2l-4-4" />
+                    </svg>
+                    Sin datos disponibles
+                </div>
+            }
+            else
+            {
+                double radio = 70;
+                double cx = 90; double cy = 90;
+                double grosor = 28;
+                double radioMedio = radio - grosor / 2.0;
+                double circunferencia = 2 * Math.PI * radioMedio;
+                double acumulado = 0;
+
+                // Preparar segmentos
+                var segmentos = Model.EmpresasPorTipo.Select((kv, i) => new
+                {
+                    Nombre = kv.Key,
+                    Valor = kv.Value,
+                    Color = coloresPastel[i % coloresPastel.Length],
+                    Porcentaje = totalEmpresasTipo > 0 ? (double)kv.Value / totalEmpresasTipo : 0
+                }).ToList();
+
+                <div class="donut-wrap">
+                    <div class="donut-svg-container">
+                        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="@cx" cy="@cy" r="@radioMedio"
+                                    fill="none"
+                                    stroke="#334155"
+                                    stroke-width="@grosor" />
+
+                            @foreach (var seg in segmentos)
+                            {
+                                double largo = seg.Porcentaje * circunferencia;
+                                double hueco = circunferencia - largo;
+                                double rotacion = -90 + (acumulado * 360);
+
+                                <circle cx="@cx.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        cy="@cy.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        r="@radioMedio.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        fill="none"
+                                        stroke="@seg.Color"
+                                        stroke-width="@grosor.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        stroke-dasharray="@largo.ToString(System.Globalization.CultureInfo.InvariantCulture) @hueco.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        stroke-dashoffset="0"
+                                        transform="rotate(@rotacion.ToString(System.Globalization.CultureInfo.InvariantCulture) @cx @cy)"
+                                        style="transition: stroke-dasharray .5s ease" />
+
+                                acumulado += seg.Porcentaje;
+                            }
+                        </svg>
+
+                        <div class="donut-center">
+                            <span class="donut-center-val">@totalEmpresasTipo</span>
+                            <span class="donut-center-lbl">empresas</span>
+                        </div>
+                    </div>
+
+                    <ul class="legend-list">
+                        @foreach (var seg in segmentos)
+                        {
+                            double pct = totalEmpresasTipo > 0 ? Math.Round(seg.Porcentaje * 100, 1) : 0;
+                            <li>
+                                <span class="legend-name">
+                                    <span class="legend-dot" style="background:@seg.Color"></span>
+                                    @seg.Nombre
+                                </span>
+                                <span class="legend-count">@seg.Valor &nbsp;<small style="font-weight:400;color:var(--dash-muted)">(@pct%)</small></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+
+        <div class="panel">
+            <div class="panel-title"><span class="icon">🕐</span> Requisiciones Recientes</div>
+
+            @if (Model.RequisicionesRecientes == null || !Model.RequisicionesRecientes.Any())
+            {
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"
+                              d="M9 12h6m-3-3v6M4 6h16M4 10h4m-4 4h2m-2 4h16" />
+                    </svg>
+                    <span>No hay requisiciones recientes para mostrar.</span>
+                </div>
+            }
+            else
+            {
+                <div class="req-table-wrap">
+                    <table class="req-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Empresa</th>
+                                <th>Fecha Emisión</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var req in Model.RequisicionesRecientes)
+                            {
+                                // Normalizar estado para clases CSS evitando excepciones de nulos
+                                string estadoTxt = req.Aprobada ? "Aprobada" : "Pendiente";
+                               // string badgeClass = req.Aprobada ? "badge-aprobada" : "badge-pendiente";
+                                string estadoNorm = estadoTxt.Trim().ToLower()
+                                .Replace("é", "e").Replace("ó", "o").Replace("á", "a")
+                                .Replace("ú", "u").Replace("í", "i");
+
+                                string badgeClass = estadoNorm switch
+                                {
+                                    "aprobada" => "badge-aprobada",
+                                    "pendiente" => "badge-pendiente",
+                                    var s when s.Contains("revision") => "badge-revision",
+                                    _ => "badge-default"
+                                };
+                                <tr>
+                                    <td style="color:var(--dash-muted); font-weight:600;">
+                                        #@req.IDRequisicion.ToString("D4")
+                                    </td>
+                                    <td>
+                                        @(req.Empresa != null ? req.Empresa.ToString() : "—")
+                                    </td>
+                                    <td style="white-space:nowrap; color:var(--dash-muted)">
+                                        @req.FechaEmision.ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        <span class="badge @badgeClass">
+                                            <span class="badge-dot"></span>
+                                            @estadoTxt
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+    </div>
 </div>

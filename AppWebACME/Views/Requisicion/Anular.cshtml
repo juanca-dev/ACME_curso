@@ -1,0 +1,82 @@
+@model Models.ACME.RequisicionEntidad
+
+@{
+    ViewData["Title"] = "Anular Requisicion";
+}
+
+<style>
+    .card-anular {
+        max-width: 600px;
+        margin: 40px auto;
+        border-top: 4px solid #dc3545;
+    }
+
+    .datos-resumen td:first-child {
+        font-weight: 600;
+        color: #6b7280;
+        width: 180px;
+    }
+</style>
+
+<div class="card card-anular shadow-sm">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Confirmar Anulación
+        </h5>
+    </div>
+    <div class="card-body">
+
+        <p class="text-muted mb-4">
+            ¿Está seguro que desea anular la siguiente requisición?
+            Esta acción la marcará como <strong>inactiva</strong>.
+        </p>
+
+        <table class="table table-borderless datos-resumen">
+            <tr>
+                <td>Código:</td>
+                <td><strong>@Model.IDRequisicion</strong></td>
+            </tr>
+            <tr>
+                <td>Nro. Requisición:</td>
+                <td>@Model.NroRequisicion</td>
+            </tr>
+            <tr>
+                <td>Empresa:</td>
+                Si tu entidad tiene una propiedad string con el nombre, cámbiala aquí.
+                Opciones comunes: Model.Empresa / Model.NombreEmpresa / Model.IDEmpresa --}}
+                <td>@Model.IDEmpresa</td>
+            </tr>
+            <tr>
+                <td>Fecha Emisión:</td>
+                <td>@Model.FechaEmision.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td>Estado actual:</td>
+                <td>
+                    @if (Model.Activo == true)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </td>
+            </tr>
+        </table>
+
+        <form asp-action="Anular" asp-route-IDRequisicion="@Model.IDRequisicion" method="post">
+            @Html.AntiForgeryToken()
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="bi bi-trash me-1"></i> Sí, anular
+                </button>
+                <a class="btn btn-secondary px-4" asp-action="IndexPaginado">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>
