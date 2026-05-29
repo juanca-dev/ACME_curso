@@ -64,6 +64,10 @@ namespace AppWebACME
             builder.Services.AddScoped<DataAccess.ACME.UsuarioDA>();
             builder.Services.AddScoped<IAccountService, AccountService>();
 
+            // Agrega estas dos líneas junto a los otros AddScoped:
+            builder.Services.AddScoped<Services.ACME.IUsuarioService,
+                                        Services.ACME.UsuarioService>();
+
             // ── Cookie Authentication ─────────────────────────────────────
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -80,6 +84,19 @@ namespace AppWebACME
 
             // ─────────────────────────────────────────────────────────────
             var app = builder.Build();
+
+
+
+
+            // ← CORRECTO: DeveloperExceptionPage ANTES del build pipeline
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
             // ─────────────────────────────────────────────────────────────
 
             // ── Pipeline HTTP ─────────────────────────────────────────────
@@ -101,6 +118,10 @@ namespace AppWebACME
                 .WithStaticAssets();
 
             app.Run();
+
+
+
+             
         }
     }
 }

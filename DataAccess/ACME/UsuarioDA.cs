@@ -159,7 +159,8 @@ namespace DataAccess.ACME
                 ORDER  BY Nombre;";
 
             using var cn = new SqlConnection(_cadenaConexion);
-            return await cn.QueryAsync<RolEntidad>(sql);
+            var resultado = await cn.QueryAsync<RolEntidad>(sql);
+            return resultado?.AsList() ?? new List<RolEntidad>();
         }
     }
 }

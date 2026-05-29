@@ -34,8 +34,7 @@ namespace Models.ACME
         [Display(Name = "Activo")]
         public bool Activo { get; set; } = true;
 
-        // Para el <select> de roles
-        public IEnumerable<RolEntidad> Roles { get; set; }
-            = new List<RolEntidad>();
+        // ← Inicializado como lista vacía — NUNCA será null
+        public List<RolEntidad> Roles { get; set; } = new List<RolEntidad>();
     }
 }
