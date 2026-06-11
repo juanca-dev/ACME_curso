@@ -1,4 +1,4 @@
-@model Models.ACME.TipoEmpresaEntidad
+@* @model Models.ACME.TipoEmpresaEntidad
 
 @{
     ViewData["Title"] = "Anular";
@@ -57,4 +57,109 @@
 </div>
 
 
+ *@
+@model Models.ACME.TipoEmpresaEntidad
 
+@{
+    ViewData["Title"] = "Anular tipo de empresa";
+}
+
+@* ── Encabezado de módulo ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Tipo de empresa</h1>
+        <p class="mod-sub">Anular registro · Código @Model.IDTipoEmpresa</p>
+    </div>
+    <a asp-action="IndexPaginado" class="form-back" style="margin-bottom:0">
+        ← Volver al listado
+    </a>
+</div>
+
+@* ── Aviso de confirmación ── *@
+<div class="toast toast-err" style="max-width:640px;margin-bottom:1.25rem">
+    <i class="bi bi-exclamation-triangle-fill" style="font-size:1.1rem;flex-shrink:0"></i>
+    <div>
+        <strong>¿Está seguro de anular este registro?</strong><br>
+        <span style="font-size:.82rem;opacity:.85">
+            Esta acción desactivará el tipo de empresa <strong>@Model.TipoEmpresa</strong>
+            (<span style="font-family:monospace">@Model.Sigla</span>).
+            Podrá reactivarlo desde Modificar.
+        </span>
+    </div>
+</div>
+
+@* ── Card de datos (solo lectura) ── *@
+<div class="form-card" style="max-width:640px">
+    <form asp-action="Anular" method="post">
+
+        <input type="hidden" asp-for="IDTipoEmpresa" />
+
+        <div class="form-section">Identificación</div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Código</label>
+                <div class="form-input" style="background:#f9fafb;color:#9ca3af;cursor:default">
+                    @Model.IDTipoEmpresa
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sigla</label>
+                <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-family:monospace;font-weight:600">
+                    @Model.Sigla
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Nombre del tipo</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-weight:600">
+                @Model.TipoEmpresa
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Descripción</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;min-height:70px">
+                @if (!string.IsNullOrEmpty(Model.Descripcion))
+                {
+                    @Model.Descripcion
+                }
+                else
+                {
+                    <span style="color:#d1d5db;font-style:italic">Sin descripción</span>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Estado actual</label>
+            <div style="padding-top:.4rem">
+                @if (Model.Activo == true)
+                {
+                    <span class="badge badge-green">
+                        <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#059669" /></svg>
+                        Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-red">
+                        <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                        Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <a class="btn-cancel" asp-action="IndexPaginado">Cancelar</a>
+            <button type="submit" class="btn-save" style="background:#dc2626"
+                    onmouseover="this.style.background='#b91c1c'"
+                    onmouseout="this.style.background='#dc2626'">
+                <i class="bi bi-trash"></i> Confirmar anulación
+            </button>
+        </div>
+
+    </form>
+</div>

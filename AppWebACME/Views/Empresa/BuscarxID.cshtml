@@ -1,4 +1,4 @@
-@model Models.ACME.EmpresaEntidad
+@* @model Models.ACME.EmpresaEntidad
 
 @{
     ViewData["Title"] = "Buscar Empresa";
@@ -118,4 +118,150 @@
     </div>
 </div>
 
+ *@
+@model Models.ACME.EmpresaEntidad
 
+@{
+    ViewData["Title"] = "Detalle de empresa";
+}
+
+@* ── Encabezado con navegación de registros ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Empresa</h1>
+        <p class="mod-sub">Ver detalle · Código @Model.IDEmpresa</p>
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+
+        @* ── Navegación entre registros ── *@
+        <div style="display:flex;gap:.35rem">
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDEmpresa="@ViewBag.Inicio"
+               title="Primer registro">
+                <i class="bi bi-skip-backward-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDEmpresa="@ViewBag.Anterior"
+               title="Registro anterior">
+                <i class="bi bi-caret-left-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDEmpresa="@ViewBag.Siguiente"
+               title="Registro siguiente">
+                <i class="bi bi-caret-right-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDEmpresa="@ViewBag.Fin"
+               title="Último registro">
+                <i class="bi bi-skip-forward-fill" style="font-size:.75rem"></i>
+            </a>
+        </div>
+
+        @* ── Divisor ── *@
+        <div style="width:1px;height:28px;background:#e5e7eb"></div>
+
+        @* ── Acciones ── *@
+        <a class="btn-tbl btn-tbl-edit" style="width:32px;height:32px"
+           asp-action="Modificar" asp-route-IDEmpresa="@Model.IDEmpresa"
+           title="Modificar">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+        <a class="btn-tbl btn-tbl-del" style="width:32px;height:32px"
+           asp-action="Anular" asp-route-IDEmpresa="@Model.IDEmpresa"
+           title="Anular"
+           onclick="return confirm('¿Deseas anular la empresa @Model.Empresa?')">
+            <i class="bi bi-trash"></i>
+        </a>
+
+        @* ── Volver ── *@
+        <a asp-action="IndexPaginado" class="form-back" style="margin-bottom:0">
+            ← Volver
+        </a>
+    </div>
+</div>
+
+@* ── Card de detalle ── *@
+<div class="form-card" style="max-width:720px">
+
+    @* ── Sección: Identificación ── *@
+    <div class="form-section">Identificación</div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Código empresa</label>
+            <div class="form-input" style="background:#f9fafb;color:#9ca3af;cursor:default">
+                @Model.IDEmpresa
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Tipo de empresa</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default">
+                @Model.TipoEmpresa
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Nombre de empresa</label>
+        <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-weight:600">
+            @Model.Empresa
+        </div>
+    </div>
+
+    @* ── Sección: Datos de contacto ── *@
+    <div class="form-section">Datos de contacto</div>
+
+    <div class="form-group">
+        <label class="form-label">Dirección</label>
+        <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default">
+            @Model.Direccion
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">RUC</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-family:monospace">
+                @Model.RUC
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Fecha de creación</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default">
+                @Model.FechaCreacion.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+    </div>
+
+    @* ── Sección: Datos financieros ── *@
+    <div class="form-section">Datos financieros</div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Presupuesto</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-family:monospace;font-weight:600">
+                S/ @Model.Presupuesto.ToString("N2")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Estado</label>
+            <div style="padding-top:.4rem">
+                @if (Model.Activo)
+                {
+                    <span class="badge badge-green">
+                        <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#059669" /></svg>
+                        Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-red">
+                        <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                        Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

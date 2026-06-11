@@ -16,7 +16,8 @@ namespace ACME_ACME.Controllers
 
             listaUnidadMedidaEntidad = unidadMedidaService.Listar();
 
-            return View(listaUnidadMedidaEntidad);
+            // return View(listaUnidadMedidaEntidad);
+            return RedirectToAction("IndexPaginado");
         }
 
         [HttpGet]

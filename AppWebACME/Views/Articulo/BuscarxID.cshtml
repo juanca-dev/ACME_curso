@@ -1,4 +1,4 @@
-@model Models.ACME.ArticuloEntidad
+@* @model Models.ACME.ArticuloEntidad
 
 @{
     ViewData["Title"] = "BuscarxID";
@@ -104,4 +104,134 @@
     </div>
 </div>
 
+ *@
+
+@model Models.ACME.ArticuloEntidad
+
+@{
+    ViewData["Title"] = "Detalle de artículo";
+}
+
+@* ── Encabezado con navegación de registros ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Artículos</h1>
+        <p class="mod-sub">Ver detalle · Código @Model.IDArticulo</p>
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+
+        @* ── Navegación entre registros ── *@
+        <div style="display:flex;gap:.35rem">
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDArticulo="@ViewBag.Inicio"
+               title="Primer registro">
+                <i class="bi bi-skip-backward-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDArticulo="@ViewBag.Anterior"
+               title="Registro anterior">
+                <i class="bi bi-caret-left-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDArticulo="@ViewBag.Siguiente"
+               title="Registro siguiente">
+                <i class="bi bi-caret-right-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDArticulo="@ViewBag.Fin"
+               title="Último registro">
+                <i class="bi bi-skip-forward-fill" style="font-size:.75rem"></i>
+            </a>
+        </div>
+
+        @* ── Divisor ── *@
+        <div style="width:1px;height:28px;background:#e5e7eb"></div>
+
+        @* ── Acciones ── *@
+        <a class="btn-tbl btn-tbl-edit" style="width:32px;height:32px"
+           asp-action="Modificar" asp-route-IDArticulo="@Model.IDArticulo"
+           title="Modificar">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+        <a class="btn-tbl btn-tbl-del" style="width:32px;height:32px"
+           asp-action="Anular" asp-route-IDArticulo="@Model.IDArticulo"
+           title="Anular">
+            <i class="bi bi-trash"></i>
+        </a>
+
+        @* ── Volver ── *@
+        <a asp-action="IndexPaginado" class="form-back" style="margin-bottom:0">
+            ← Volver
+        </a>
+    </div>
+</div>
+
+@* ── Card de detalle ── *@
+<div class="form-card" style="max-width:680px">
+
+    @* ── Sección: Identificación ── *@
+    <div class="form-section">Identificación</div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Código artículo</label>
+            <div class="form-input" style="background:#f9fafb;color:#9ca3af;cursor:default">
+                @Model.IDArticulo
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Unidad de medida</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default">
+                @Model.UnidadMedida
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Artículo</label>
+        <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-weight:600">
+            @Model.Articulo
+        </div>
+    </div>
+
+    @* ── Sección: Datos comerciales ── *@
+    <div class="form-section">Datos comerciales</div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Precio</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-family:monospace;font-weight:600">
+                @(Model.Precio.HasValue ? $"S/ {Model.Precio.Value:N2}" : "-")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Stock actual</label>
+            <div class="form-input" style="background:#f9fafb;cursor:default;font-family:monospace;font-weight:600;
+                 color:@((!Model.StockActual.HasValue || Model.StockActual <= 0) ? "#dc2626" : Model.StockActual <= 5 ? "#d97706" : "#374151")">
+                @(Model.StockActual.HasValue? Model.StockActual.Value.ToString("N0") : "Sin stock")
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Estado</label>
+        <div style="padding-top:.4rem">
+            @if (Model.Activo)
+            {
+                <span class="badge badge-green">
+                    <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#059669" /></svg>
+                    Activo
+                </span>
+            }
+            else
+            {
+                <span class="badge badge-red">
+                    <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                    Inactivo
+                </span>
+            }
+        </div>
+    </div>
+
+</div>
 

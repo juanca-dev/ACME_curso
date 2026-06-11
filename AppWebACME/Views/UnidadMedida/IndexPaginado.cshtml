@@ -1,4 +1,4 @@
-@model List<Models.ACME.UnidadMedidaEntidad>
+@* @model List<Models.ACME.UnidadMedidaEntidad>
 
 @{
     ViewData["Title"] = "UnidadMedida";
@@ -128,4 +128,137 @@
             }
         </ul>
     </nav>
+</div> *@
+@model List<Models.ACME.UnidadMedidaEntidad>
+
+@{
+    ViewData["Title"] = "Unidad de medida";
+    int totalPaginas = ViewBag.totalPaginas;
+    int tamañoGrupo = ViewBag.maxPaginasVisibles;
+    int totalGrupos = (int)Math.Ceiling((double)totalPaginas / tamañoGrupo);
+    int grupoActual = (int)Math.Ceiling((double)ViewBag.nroPagina / tamañoGrupo);
+    int inicioPagina = (grupoActual - 1) * tamañoGrupo + 1;
+    int finPagina = Math.Min(grupoActual * tamañoGrupo, totalPaginas);
+    int activas = Model.Count(u => u.Activo == true);
+}
+
+@* ── Encabezado de módulo ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Unidad de medida</h1>
+        <p class="mod-sub">@Model.Count registros · @activas activas</p>
+    </div>
+    <a asp-action="Crear" class="btn-add" title="Nueva unidad de medida">
+        <i class="bi bi-plus-circle"></i> Nueva unidad
+    </a>
+</div>
+
+@* ── Tabla ── *@
+<div class="tbl-card">
+    <table class="tbl">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Unidad de medida</th>
+                <th>Sigla</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td style="color:#9ca3af;font-size:.8rem;font-weight:600">@u.IDUnidadMedida</td>
+                    <td style="font-weight:600">@u.UnidadMedida</td>
+                    <td>
+                        <span style="background:#f3f4f6;color:#374151;font-size:.78rem;font-weight:600;padding:.2rem .65rem;border-radius:6px;border:1px solid #e5e7eb;font-family:monospace">
+                            @u.Sigla
+                        </span>
+                    </td>
+                    <td>
+                        @if (u.Activo == true)
+                        {
+                            <span class="badge badge-green">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0">
+                                    <circle cx="3" cy="3" r="3" fill="#059669" />
+                                </svg>
+                                Activo
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-red">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0">
+                                    <circle cx="3" cy="3" r="3" fill="#dc2626" />
+                                </svg>
+                                Inactivo
+                            </span>
+                        }
+                    </td>
+                    <td>
+                        <div class="tbl-actions">
+                            <a class="btn-tbl btn-tbl-view"
+                               asp-route-controller="UnidadMedida"
+                               asp-route-action="BuscarxID"
+                               asp-route-IDUnidadMedida="@u.IDUnidadMedida"
+                               title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a class="btn-tbl btn-tbl-edit"
+                               asp-route-controller="UnidadMedida"
+                               asp-route-action="Modificar"
+                               asp-route-IDUnidadMedida="@u.IDUnidadMedida"
+                               title="Modificar">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a class="btn-tbl btn-tbl-del"
+                               asp-route-controller="UnidadMedida"
+                               asp-route-action="Anular"
+                               asp-route-IDUnidadMedida="@u.IDUnidadMedida"
+                               title="Anular"
+                               onclick="return confirm('¿Deseas anular la unidad de medida @u.UnidadMedida?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* ── Paginación ── *@
+    <div class="pag-wrap">
+        @if (grupoActual > 1)
+        {
+            <a class="pag-btn" href="@Url.Action("IndexPaginado", new { pagina = (inicioPagina - 1) })" aria-label="Anterior">
+                ← Anterior
+            </a>
+        }
+        else
+        {
+            <span class="pag-btn disabled">← Anterior</span>
+        }
+
+        @for (int i = inicioPagina; i <= finPagina; i++)
+        {
+            <a class="pag-btn @(i == ViewBag.nroPagina ? "active" : "")"
+               href="@Url.Action("IndexPaginado", new { pagina = i })">@i</a>
+        }
+
+        @if (grupoActual < totalGrupos)
+        {
+            <a class="pag-btn" href="@Url.Action("IndexPaginado", new { pagina = (finPagina + 1) })" aria-label="Siguiente">
+                Siguiente →
+            </a>
+        }
+        else
+        {
+            <span class="pag-btn disabled">Siguiente →</span>
+        }
+
+        <span class="pag-info">
+            Página @ViewBag.nroPagina de @totalPaginas
+        </span>
+    </div>
 </div>

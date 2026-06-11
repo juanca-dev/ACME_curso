@@ -1,4 +1,4 @@
-@model Models.ACME.ArticuloEntidad
+﻿@* @model Models.ACME.ArticuloEntidad
 
 @{
     ViewData["Title"] = "Modificar";
@@ -58,4 +58,96 @@
         </form>
     </div>
 </div>
+ *@
+@model Models.ACME.ArticuloEntidad
 
+@{
+    ViewData["Title"] = "Modificar articulo";
+}
+
+@* ── Encabezado de módulo ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Artículos</h1>
+        <p class="mod-sub">Modificar registro · Código @Model.IDArticulo</p>
+    </div>
+    <a asp-action="IndexPaginado" class="form-back" style="margin-bottom:0">
+        ← Volver al listado
+    </a>
+</div>
+
+@* ── Formulario ── *@
+<div class="form-card" style="max-width:680px">
+    <form asp-action="Modificar" method="post">
+
+        @* ── Sección: Identificación ── *@
+        <div class="form-section">Identificación</div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" asp-for="IDArticulo">Código artículo</label>
+                <input type="number" min="0" class="form-input" asp-for="IDArticulo" readonly
+                       style="background:#f9fafb;color:#9ca3af;cursor:not-allowed" />
+                <span asp-validation-for="IDArticulo" class="form-error"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="IDUnidadMedida">Unidad de medida</label>
+                @Html.DropDownList("IDUnidadMedida",
+                ViewBag.ListaUnidadMedidaEntidad0 as SelectList,
+                                "Seleccione una unidad",
+                                new { @class = "form-input" })
+                <span asp-validation-for="IDUnidadMedida" class="form-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" asp-for="Articulo">Nombre del artículo</label>
+            <input type="text" class="form-input" asp-for="Articulo"
+                   placeholder="Ej. Papel bond A4" />
+            <span asp-validation-for="Articulo" class="form-error"></span>
+        </div>
+
+        @* ── Sección: Datos comerciales ── *@
+        <div class="form-section">Datos comerciales</div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" asp-for="Precio">Precio (S/)</label>
+                <input type="number" min="0" step="0.01" class="form-input"
+                       asp-for="Precio" placeholder="0.00" />
+                <span asp-validation-for="Precio" class="form-error"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="StockActual">Stock actual</label>
+                @* Stock es readonly en modificar — se gestiona por movimientos *@
+                <input type="number" min="0" step="1" class="form-input"
+                       asp-for="StockActual" readonly
+                       style="background:#f9fafb;color:#9ca3af;cursor:not-allowed" />
+                <span asp-validation-for="StockActual" class="form-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" asp-for="Activo">Estado</label>
+            <label class="check-label" style="width:fit-content">
+                <input type="checkbox" asp-for="Activo" />
+                Artículo activo
+            </label>
+        </div>
+
+        @* ── Footer de acciones ── *@
+        <div class="form-footer">
+            <a class="btn-cancel" asp-action="IndexPaginado">Cancelar</a>
+            <button type="submit" class="btn-save">
+                <i class="bi bi-check-circle"></i> Guardar cambios
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

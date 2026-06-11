@@ -16,7 +16,8 @@ namespace ACME.Controllers
 
             listaArticuloEntidad = articuloService.Listar();
 
-            return View(listaArticuloEntidad);
+            //return View(listaArticuloEntidad);
+            return RedirectToAction("IndexPaginado");
         }
 
         [HttpGet]

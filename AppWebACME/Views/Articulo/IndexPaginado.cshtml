@@ -1,4 +1,4 @@
-@model List<Models.ACME.ArticuloEntidad>
+@* @model List<Models.ACME.ArticuloEntidad>
 
 @{
     ViewData["Title"] = "Articulo";
@@ -130,4 +130,170 @@
             }
         </ul>
     </nav>
+</div> *@
+@model List<Models.ACME.ArticuloEntidad>
+
+@{
+    ViewData["Title"] = "Articulo";
+    int totalPaginas = ViewBag.totalPaginas;
+    int tamañoGrupo = ViewBag.maxPaginasVisibles;
+    int totalGrupos = (int)Math.Ceiling((double)totalPaginas / tamañoGrupo);
+    int grupoActual = (int)Math.Ceiling((double)ViewBag.nroPagina / tamañoGrupo);
+    int inicioPagina = (grupoActual - 1) * tamañoGrupo + 1;
+    int finPagina = Math.Min(grupoActual * tamañoGrupo, totalPaginas);
+    int activos = Model.Count(a => a.Activo == true);
+    int sinStock = Model.Count(a => a.StockActual <= 0);
+}
+
+@* ── Encabezado de módulo ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Artículos</h1>
+        <p class="mod-sub">@Model.Count registros · @activos activos@(sinStock > 0 ? $" · {sinStock} sin stock" : "")</p>
+    </div>
+    <a asp-action="Crear" class="btn-add" title="Nuevo artículo">
+        <i class="bi bi-plus-circle"></i> Nuevo artículo
+    </a>
 </div>
+
+@* ── Tabla ── *@
+<div class="tbl-card">
+    <table class="tbl">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Artículo</th>
+                <th style="text-align:right">Precio</th>
+                <th style="text-align:center">Stock</th>
+                <th>Unidad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td style="color:#9ca3af;font-size:.8rem;font-weight:600">@a.IDArticulo</td>
+                    <td style="font-weight:600">@a.Articulo</td>
+
+                    @* ── Precio formateado ── *@
+                    <td style="text-align:right;font-family:monospace;font-size:.85rem;font-weight:600;color:#111827">
+                        @(a.Precio.HasValue ? $"S/ {a.Precio.Value:N2}" : "-")
+
+                    </td>
+
+                    @* ── Stock con alerta visual ── *@
+                    <td style="text-align:center">
+                        @if (a.StockActual <= 0)
+                        {
+                            <span class="badge badge-red">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                                Sin stock
+                            </span>
+                        }
+                        else if (a.StockActual <= 5)
+                        {
+                            <span class="badge badge-yellow">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#d97706" /></svg>
+                                @a.StockActual
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="font-size:.85rem;font-weight:600;color:#374151">@a.StockActual</span>
+                        }
+                    </td>
+
+                    @* ── Unidad de medida ── *@
+                    <td>
+                        <span style="background:#f3f4f6;color:#374151;font-size:.78rem;font-weight:600;padding:.2rem .6rem;border-radius:6px;border:1px solid #e5e7eb;font-family:monospace">
+                            @a.UnidadMedida
+                        </span>
+                    </td>
+
+                    @* ── Badge estado ── *@
+                    <td>
+                        @if (a.Activo == true)
+                        {
+                            <span class="badge badge-green">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#059669" /></svg>
+                                Activo
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-red">
+                                <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                                Inactivo
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+                        <div class="tbl-actions">
+                            <a class="btn-tbl btn-tbl-view"
+                               asp-route-controller="Articulo"
+                               asp-route-action="BuscarxID"
+                               asp-route-IDArticulo="@a.IDArticulo"
+                               title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a class="btn-tbl btn-tbl-edit"
+                               asp-route-controller="Articulo"
+                               asp-route-action="Modificar"
+                               asp-route-IDArticulo="@a.IDArticulo"
+                               title="Modificar">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a class="btn-tbl btn-tbl-del"
+                               asp-route-controller="Articulo"
+                               asp-route-action="Anular"
+                               asp-route-IDArticulo="@a.IDArticulo"
+                               title="Anular">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* ── Paginación ── *@
+    <div class="pag-wrap">
+        @if (grupoActual > 1)
+        {
+            <a class="pag-btn" href="@Url.Action("IndexPaginado", new { pagina = (inicioPagina - 1) })" aria-label="Anterior">
+                ← Anterior
+            </a>
+        }
+        else
+        {
+            <span class="pag-btn disabled">← Anterior</span>
+        }
+
+        @for (int i = inicioPagina; i <= finPagina; i++)
+        {
+            <a class="pag-btn @(i == ViewBag.nroPagina ? "active" : "")"
+               href="@Url.Action("IndexPaginado", new { pagina = i })">@i</a>
+        }
+
+        @if (grupoActual < totalGrupos)
+        {
+            <a class="pag-btn" href="@Url.Action("IndexPaginado", new { pagina = (finPagina + 1) })" aria-label="Siguiente">
+                Siguiente →
+            </a>
+        }
+        else
+        {
+            <span class="pag-btn disabled">Siguiente →</span>
+        }
+
+        <span class="pag-info">
+            Página @ViewBag.nroPagina de @totalPaginas
+        </span>
+    </div>
+</div>
+
+

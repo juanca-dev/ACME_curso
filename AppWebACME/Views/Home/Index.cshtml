@@ -1,8 +1,99 @@
 ﻿@{
-     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Aprende <a href="https://learn.microsoft.com/aspnet/core">implementación Web con ASP.NET Core</a>.</p>
+@* ── CSS ya está en wwwroot/css/acme-ui.css ──────────────
+   Asegúrate de incluirlo en _LayoutAdmin.cshtml así:
+   <link rel="stylesheet" href="~/css/acme-ui.css" asp-append-version="true" />
+   ─────────────────────────────────────────────────────── *@
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+
+    <div class="kpi-card" style="--card-accent:#6366f1">
+        <div class="kpi-icon">📋</div>
+        <div>
+            <div class="kpi-value skeleton" style="width:40px;height:32px;margin-bottom:6px;"></div>
+            <div class="kpi-label">Requisiciones</div>
+        </div>
+    </div>
+
+    <div class="kpi-card" style="--card-accent:#10b981">
+        <div class="kpi-icon">✅</div>
+        <div>
+            <div class="kpi-value skeleton" style="width:40px;height:32px;margin-bottom:6px;"></div>
+            <div class="kpi-label">Aprobadas</div>
+        </div>
+    </div>
+
+    <div class="kpi-card" style="--card-accent:#3b82f6">
+        <div class="kpi-icon">🏢</div>
+        <div>
+            <div class="kpi-value skeleton" style="width:40px;height:32px;margin-bottom:6px;"></div>
+            <div class="kpi-label">Empresas Activas</div>
+        </div>
+    </div>
+
+    <div class="kpi-card" style="--card-accent:#f59e0b">
+        <div class="kpi-icon">📦</div>
+        <div>
+            <div class="kpi-value skeleton" style="width:40px;height:32px;margin-bottom:6px;"></div>
+            <div class="kpi-label">Total Artículos</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Fila inferior -->
+<div class="dash-row">
+
+    <!-- Gráfico placeholder -->
+    <div class="panel">
+        <div class="panel-title">
+            🥧 Empresas por Tipo
+            <span class="tag-soon">Próximamente</span>
+        </div>
+        <div class="coming-soon">
+            <i class="ti ti-chart-donut"></i>
+            <strong>Gráfico en desarrollo</strong>
+            <span>Aquí se mostrará la distribución<br />de empresas por tipo</span>
+        </div>
+    </div>
+
+    <!-- Tabla placeholder -->
+    <div class="panel">
+        <div class="panel-title">
+            🕐 Requisiciones Recientes
+            <span class="tag-soon">Próximamente</span>
+        </div>
+
+        <table class="acme-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Empresa</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < 5; i++)
+                {
+                    <tr>
+                        <td><div class="skeleton" style="width:24px;height:14px;"></div></td>
+                        <td><div class="skeleton" style="width:@(80 + i * 15)px;height:14px;"></div></td>
+                        <td><div class="skeleton" style="width:70px;height:14px;"></div></td>
+                        <td><div class="skeleton" style="width:60px;height:20px;border-radius:999px;"></div></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="empty-state">
+            <i class="ti ti-database-off" style="margin-right:.3rem;"></i>
+            Conectando datos reales próximamente
+        </div>
+    </div>
+
 </div>

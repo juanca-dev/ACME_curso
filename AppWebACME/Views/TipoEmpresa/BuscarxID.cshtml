@@ -1,4 +1,4 @@
-@model Models.ACME.TipoEmpresaEntidad
+@* @model Models.ACME.TipoEmpresaEntidad
 
 @{
     ViewData["Title"] = "BuscarxID";
@@ -99,4 +99,124 @@
     </div>
 </div>
 
+ *@
+
+@model Models.ACME.TipoEmpresaEntidad
+
+@{
+    ViewData["Title"] = "Detalle de tipo de empresa";
+}
+
+@* ── Encabezado con navegación ── *@
+<div class="mod-header">
+    <div>
+        <h1 class="mod-title">Tipo de empresa</h1>
+        <p class="mod-sub">Ver detalle · Código @Model.IDTipoEmpresa</p>
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+
+        <div style="display:flex;gap:.35rem">
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Inicio"
+               title="Primer registro">
+                <i class="bi bi-skip-backward-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Anterior"
+               title="Registro anterior">
+                <i class="bi bi-caret-left-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Siguiente"
+               title="Registro siguiente">
+                <i class="bi bi-caret-right-fill" style="font-size:.75rem"></i>
+            </a>
+            <a class="btn-tbl btn-tbl-view" style="width:32px;height:32px"
+               asp-action="BuscarxID" asp-route-IDTipoEmpresa="@ViewBag.Fin"
+               title="Último registro">
+                <i class="bi bi-skip-forward-fill" style="font-size:.75rem"></i>
+            </a>
+        </div>
+
+        <div style="width:1px;height:28px;background:#e5e7eb"></div>
+
+        <a class="btn-tbl btn-tbl-edit" style="width:32px;height:32px"
+           asp-action="Modificar" asp-route-IDTipoEmpresa="@Model.IDTipoEmpresa"
+           title="Modificar">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+        <a class="btn-tbl btn-tbl-del" style="width:32px;height:32px"
+           asp-action="Anular" asp-route-IDTipoEmpresa="@Model.IDTipoEmpresa"
+           title="Anular">
+            <i class="bi bi-trash"></i>
+        </a>
+
+        <a asp-action="IndexPaginado" class="form-back" style="margin-bottom:0">
+            ← Volver
+        </a>
+    </div>
+</div>
+
+@* ── Card de detalle ── *@
+<div class="form-card" style="max-width:640px">
+
+    <div class="form-section">Identificación</div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Código</label>
+            <div class="form-input" style="background:#f9fafb;color:#9ca3af;cursor:default">
+                @Model.IDTipoEmpresa
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Sigla</label>
+            <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-family:monospace;font-weight:600">
+                @Model.Sigla
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Nombre del tipo</label>
+        <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;font-weight:600">
+            @Model.TipoEmpresa
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <div class="form-input" style="background:#f9fafb;color:#374151;cursor:default;min-height:70px">
+            @if (!string.IsNullOrEmpty(Model.Descripcion))
+            {
+                @Model.Descripcion
+            }
+            else
+            {
+                <span style="color:#d1d5db;font-style:italic">Sin descripción</span>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Estado</label>
+        <div style="padding-top:.4rem">
+            @if (Model.Activo == true)
+            {
+                <span class="badge badge-green">
+                    <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#059669" /></svg>
+                    Activo
+                </span>
+            }
+            else
+            {
+                <span class="badge badge-red">
+                    <svg width="6" height="6" viewBox="0 0 6 6" style="flex-shrink:0"><circle cx="3" cy="3" r="3" fill="#dc2626" /></svg>
+                    Inactivo
+                </span>
+            }
+        </div>
+    </div>
+
+</div>
 

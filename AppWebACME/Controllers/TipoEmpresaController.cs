@@ -16,7 +16,8 @@ namespace ACME_ACME.Controllers
 
             listaTipoEmpresaEntidad = tipoEmpresaService.Listar();
 
-            return View(listaTipoEmpresaEntidad);
+            //return View(listaTipoEmpresaEntidad);
+            return RedirectToAction("IndexPaginado");
         }
 
         [HttpGet]
